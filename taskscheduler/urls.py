@@ -16,15 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import TaskViewSet, RecurringTaskViewSet, TaskUpdateView, TaskDeleteView
-from rest_framework.authtoken.views import obtain_auth_token
+from .views import CreateUserView, LoginView, LogoutView, TaskCreateView, CompletedTaskListView, PendingTaskListView, TaskDetailView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('', TaskViewSet.as_view(), name='Task'),
-    path('', RecurringTaskViewSet.as_view(), name='Recuring'),
-    path('task/<int:pk>/update', TaskUpdateView.as_view(), name='delete_task'),
-    path('task/<int:pk>/delete', TaskDeleteView.as_view(), name='delete_task'),
-    path('api/token/', obtain_auth_token, name='obtain'),
+    path('register/', CreateUserView.as_view(), name='CreateUser'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('completed_task/', CompletedTaskListView.as_view(), name='completed-task'),
+    path('pending_task/', PendingTaskListView.as_view(), name='pending-task'),
+    path('create_task/', TaskCreateView.as_view(), name='task-create'),
+    path('<int:pk>/', TaskDetailView.as_view(), name='task-detail'),
+    path('api/task/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/task/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
